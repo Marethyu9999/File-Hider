@@ -5,24 +5,41 @@ import os
 
 PyInstaller.__main__.run([
     'main.py',
+    '--onefile'
 ])
 
-src = "path/dist/main/main.exe"
-dst = "path"
+print("Waiting 5 seconds.")
+time.sleep(5)
 
-shutil.copy2(src, dst)
+# Defining Paths
+dir_path = os.path.dirname(os.path.realpath(__file__))
+copy_exe_src = "{0}/dist/main.exe".format(dir_path)
+rmv = ["{0}/dist".format(dir_path), "{0}/build".format(dir_path), "{0}/main.spec".format(dir_path),
+       "{0}/__pycache__".format(dir_path)]
 
-waiting_time = 3
+# Copying main.exe to active
+shutil.copy2(copy_exe_src, dir_path)
+print("{0} was copied to the active directory.".format(copy_exe_src))
 
-while waiting_time > 0:
-    time.sleep(1)
-    print("Waited 1 out of {0} seconds".format(waiting_time))
-    waiting_time = - 1
 
-rmv = ["path/dist", "path/build", "path/__pycache__", "main.spec"]
+def file_check(checking):
+    isfile = os.path.isfile(checking)
+    isdir = os.path.isdir(checking)
+    if isfile:
+        return "IsFile"
+    elif isdir:
+        return "IsDir"
+
 
 for x in rmv:
-    os.remove(x)
-    print("{0} wurde gelöscht.".format(x))
+    if file_check(x) == "IsFile":
+        os.remove(x)
+        print("Removed file: {0}".format(x))
+    elif file_check(x) == "IsDir":
+        shutil.rmtree(x)
+        print("Removed Directory: {0}".format(x))
+    else:
+        print("Something is not working!\nx={0}".format(x))
 
 input("... ")
+exit()
