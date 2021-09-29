@@ -1,0 +1,2 @@
+print("Pyinstaller works")
+input("...")
